@@ -53,8 +53,14 @@ void MainWindow::on_submit_clicked()
     QString capacity = ui->linecapacity->text();
     QString diagonal = ui->linediagonal->text();
     QString price = ui->lineprice->text();
-    qDebug()<<"insert into smartphone(brand,model,capacity,diagonal,price) values ('"+brand+"','"+modely+"',"+ capacity+","+diagonal+","+price+");";
-    query.exec("insert into smartphone(brand,model,capacity,diagonal,price) values ('"+brand+"','"+modely+"',"+ capacity+","+diagonal+","+price+");");
+    query.prepare("insert into smartphone(brand,model,capacity,diagonal,price) "
+                  "values (:brand,:modely,:capacity,:diagonal,:price);
+    query.bindValue(":brand",brand);
+    query.bindValue(":model",modely);
+    query.bindValue(":capacity",capacity);
+    query.bindValue(":diagonal",diagonal);
+    query.bindValue(":price",price);
+    query.exec();
     model->select();
 }
 
@@ -86,9 +92,13 @@ void MainWindow::slotRemove()
 
 void MainWindow::on_pushButton_clicked()
 {
+    QSqlQuery query;
     QString urlstr= ui->lineUrl->text();
     QString idurl=ui->lineEdit->text();
     qDebug()<<"insert into smart_photo(url,smart_id) values ('"+urlstr+"',"+idurl+");";
-    db.exec("insert into smart_photo(url,smart_id) values ('"+urlstr+"',"+idurl+");");
+    query.prepare("insert into smart_photo(url,smart_id) values (:urlstr,:idurl);
+    query.bindValue(":urlstr",urlstr);
+    query.bindValue(":idurl",idurl);
+    query.exec();
     model->select();
 }
